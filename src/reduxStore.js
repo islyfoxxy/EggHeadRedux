@@ -1,12 +1,19 @@
 import { createStore, combineReducers } from 'redux'
 import { v4 as uuidv4 } from 'uuid'
 
+const addTodoAction = (text) => ({ type: 'ADD_TODO', id: uuidv4(), text })
+const toggleTodoAction = (id) => ({ type: 'TOGGLE_TODO', id })
+const setVisibFilterAction = (filter) => ({
+  type: 'SET_VISIBILITY_FILTER',
+  filter
+})
+
 const todo = (state, action) => {
   const { type, id, ...args } = action
 
   switch (type) {
     case 'ADD_TODO':
-      return { ...args, id: id || uuidv4(), completed: false }
+      return { ...args, id, completed: false }
     case 'TOGGLE_TODO':
       return state.id === id ? { ...state, completed: !state.completed } : state
     default:
@@ -41,7 +48,7 @@ const todoApp = combineReducers({
 
 const store = createStore(todoApp)
 export default store
-export { todos }
+export { todos, addTodoAction, toggleTodoAction, setVisibFilterAction }
 
 // const combineReducers = (reducers) => {
 //   return (state = {}, action) => {

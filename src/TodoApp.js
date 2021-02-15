@@ -1,41 +1,32 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import VisibilityFilter from './VisibilityFilter'
 import TodoListView from './TodoListView'
 import AddTodoForm from './AddTodoForm'
+import {
+  addTodoAction,
+  toggleTodoAction,
+  setVisibFilterAction
+} from './reduxStore'
+import './test'
+import StoreContext from './StoreContext'
 
-export default function TodoApp({ store }) {
-  const [tasks, setTaskes] = useState([])
-  const [filter, setFilter] = useState([])
-
-  const updateData = () => {
-    const { todos, visibilityFilter } = store.getState()
-    const visibleTodos =
-      visibilityFilter === 'SHOW_COMPLETED'
-        ? todos.filter((item) => item.completed)
-        : visibilityFilter === 'SHOW_ACTIVE'
-        ? todos.filter((item) => !item.completed)
-        : todos
-    setTaskes(visibleTodos || [])
-    setFilter(visibilityFilter)
-  }
-
-  store.subscribe(updateData)
-
-  const onAddTodo = (title) => store.dispatch({ type: 'ADD_TODO', text: title })
-  const onToggle = (id) => store.dispatch({ type: 'TOGGLE_TODO', id })
+export default function TodoApp() {
+  const store = useContext(StoreContext)
+  const [filter, setFilter] = useState(store.getState().visibilityFilter)
+  const onAddTodo = (title) => store.dispatch(addTodoAction(title))
+  const onToggle = (id) => store.dispatch(toggleTodoAction(id))
   const onFilterChange = (filter) =>
-    store.dispatch({ type: 'SET_VISIBILITY_FILTER', filter })
+    store.dispatch(setVisibFilterAction(filter))
 
   useEffect(() => {
-    const { todos, visibilityFilter } = store.getState()
-    const visibleTodos =
-      visibilityFilter === 'SHOW_COMPLETED'
-        ? todos.filter((item) => item.completed)
-        : visibilityFilter === 'SHOW_ACTIVE'
-        ? todos.filter((item) => !item.completed)
-        : todos
-    setTaskes(visibleTodos || [])
-    setFilter(visibilityFilter)
+    const unsubscribe = store.subscribe(() => {
+      const { visibilityFilter } = store.getState()
+      setFilter(visibilityFilter)
+    })
+
+    return () => {
+      unsubscribe()
+    }
   }, [store])
 
   return (
@@ -49,7 +40,7 @@ export default function TodoApp({ store }) {
             currentFilter={filter}
             onFilterChange={onFilterChange}
           />
-          <TodoListView todoList={tasks} onToggle={onToggle} />
+          <TodoListView onToggle={onToggle} />
         </div>
       </div>
     </div>

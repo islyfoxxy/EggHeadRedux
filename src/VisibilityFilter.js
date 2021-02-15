@@ -29,7 +29,6 @@ export default function VisibilityFilter({ currentFilter, onFilterChange }) {
       <label className="btn btn-outline-secondary" htmlFor="btnradio2">
         Active
       </label>
-
       <input
         type="radio"
         className="btn-check"

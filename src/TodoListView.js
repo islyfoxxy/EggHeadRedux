@@ -1,6 +1,28 @@
+import { useContext, useEffect, useState } from 'react'
+import StoreContext from './StoreContext'
 import TodoView from './TodoView'
 
-export default function TodoListView({ todoList, onToggle }) {
+export default function TodoListView({ onToggle }) {
+  const store = useContext(StoreContext)
+  const [todoList, setTodoList] = useState(store.getState().todos || [])
+
+  useEffect(() => {
+    const unsubscribe = store.subscribe(() => {
+      const { todos, visibilityFilter } = store.getState()
+      const visibleTodos =
+        visibilityFilter === 'SHOW_COMPLETED'
+          ? todos.filter((item) => item.completed)
+          : visibilityFilter === 'SHOW_ACTIVE'
+          ? todos.filter((item) => !item.completed)
+          : todos
+      setTodoList(visibleTodos || [])
+    })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [store])
+
   return (
     <>
       {todoList.length === 0 ? (
