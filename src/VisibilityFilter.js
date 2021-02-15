@@ -1,11 +1,5 @@
-export default function VisibilityFilter({ store }) {
-  const currentFilter = store.getState().visibilityFilter
-  const onFilterChange = ({ target: { dataset } }) => {
-    store.dispatch({
-      type: 'SET_VISIBILITY_FILTER',
-      filter: dataset.filter
-    })
-  }
+export default function VisibilityFilter({ currentFilter, onFilterChange }) {
+  const onChange = ({ target: { dataset } }) => onFilterChange(dataset.filter)
 
   return (
     <div className="btn-group my-3" role="group" aria-label="visibility filter">
@@ -15,7 +9,7 @@ export default function VisibilityFilter({ store }) {
         name="btnradio"
         id="btnradio1"
         autoComplete="off"
-        onChange={onFilterChange}
+        onChange={onChange}
         data-filter="SHOW_ALL"
         defaultChecked={currentFilter === 'SHOW_ALL'}
       />
@@ -28,7 +22,7 @@ export default function VisibilityFilter({ store }) {
         name="btnradio"
         id="btnradio2"
         autoComplete="off"
-        onChange={onFilterChange}
+        onChange={onChange}
         data-filter="SHOW_ACTIVE"
         defaultChecked={currentFilter === 'SHOW_ACTIVE'}
       />
@@ -42,7 +36,7 @@ export default function VisibilityFilter({ store }) {
         name="btnradio"
         id="btnradio3"
         autoComplete="off"
-        onChange={onFilterChange}
+        onChange={onChange}
         data-filter="SHOW_COMPLETED"
         defaultChecked={currentFilter === 'SHOW_COMPLETED'}
       />

@@ -1,14 +1,14 @@
-export default function TodoView({ todo, onToggle }) {
-  const onClick = () => onToggle(todo.id)
+export default function TodoView({ id, completed, text, onToggle }) {
+  const onClick = () => onToggle(id)
   const style = {
-    textDecoration: todo.completed ? 'line-through' : 'none',
+    textDecoration: completed ? 'line-through' : 'none',
     cursor: 'pointer'
   }
 
   return (
     <li onClick={onClick}>
-      {!todo.completed ? <span>✧</span> : <span>✓</span>}{' '}
-      <span style={style}>{todo.text}</span>
+      {!completed ? <span>✧</span> : <span>✓</span>}{' '}
+      <span style={style}>{text}</span>
     </li>
   )
 }

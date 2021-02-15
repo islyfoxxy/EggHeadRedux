@@ -1,10 +1,11 @@
-import { useRef, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import VisibilityFilter from './VisibilityFilter'
 import TodoListView from './TodoListView'
+import AddTodoForm from './AddTodoForm'
 
 export default function TodoApp({ store }) {
-  const inputRef = useRef()
   const [tasks, setTaskes] = useState([])
+  const [filter, setFilter] = useState([])
 
   const updateData = () => {
     const { todos, visibilityFilter } = store.getState()
@@ -15,20 +16,15 @@ export default function TodoApp({ store }) {
         ? todos.filter((item) => !item.completed)
         : todos
     setTaskes(visibleTodos || [])
+    setFilter(visibilityFilter)
   }
 
   store.subscribe(updateData)
 
-  const onAddNewTask = () => {
-    inputRef.current.value.length > 0 &&
-      store.dispatch({
-        type: 'ADD_TODO',
-        text: inputRef.current.value
-      })
-    inputRef.current.value = ''
-  }
-
+  const onAddTodo = (title) => store.dispatch({ type: 'ADD_TODO', text: title })
   const onToggle = (id) => store.dispatch({ type: 'TOGGLE_TODO', id })
+  const onFilterChange = (filter) =>
+    store.dispatch({ type: 'SET_VISIBILITY_FILTER', filter })
 
   useEffect(() => {
     const { todos, visibilityFilter } = store.getState()
@@ -39,6 +35,7 @@ export default function TodoApp({ store }) {
         ? todos.filter((item) => !item.completed)
         : todos
     setTaskes(visibleTodos || [])
+    setFilter(visibilityFilter)
   }, [store])
 
   return (
@@ -47,24 +44,11 @@ export default function TodoApp({ store }) {
         <div className="card-body">
           <h5 className="card-title">Simple ToDo List</h5>
           <h6 className="card-subtitle mb-2 text-muted">using Redux</h6>
-          <div className="input-group mb-3">
-            <input
-              ref={inputRef}
-              type="text"
-              className="form-control"
-              placeholder="enter your new task"
-              aria-label="Recipient's username"
-              aria-describedby="button-addon2"
-            />
-            <button
-              type="button"
-              onClick={onAddNewTask}
-              className="btn btn-outline-secondary"
-            >
-              Add ToDo
-            </button>
-          </div>
-          <VisibilityFilter store={store} />
+          <AddTodoForm onAddTodo={onAddTodo} />
+          <VisibilityFilter
+            currentFilter={filter}
+            onFilterChange={onFilterChange}
+          />
           <TodoListView todoList={tasks} onToggle={onToggle} />
         </div>
       </div>

@@ -10,7 +10,7 @@ export default function TodoListView({ todoList, onToggle }) {
           <h6 className="mt-3">Your tasks for Today:</h6>
           <ol className="list-unstyled">
             {todoList.map((todo) => (
-              <TodoView key={todo.id} todo={todo} onToggle={onToggle} />
+              <TodoView key={todo.id} {...todo} onToggle={onToggle} />
             ))}
           </ol>
         </div>
