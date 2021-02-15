@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import VisibilityFilter from './VisibilityFilter'
+import TodoListView from './TodoListView'
 
 export default function TodoApp({ store }) {
   const inputRef = useRef()
@@ -9,9 +10,9 @@ export default function TodoApp({ store }) {
     const { todos, visibilityFilter } = store.getState()
     const visibleTodos =
       visibilityFilter === 'SHOW_COMPLETED'
-        ? todos.filter((item) => item.completed === true)
+        ? todos.filter((item) => item.completed)
         : visibilityFilter === 'SHOW_ACTIVE'
-        ? todos.filter((item) => item.completed === false)
+        ? todos.filter((item) => !item.completed)
         : todos
     setTaskes(visibleTodos || [])
   }
@@ -27,9 +28,7 @@ export default function TodoApp({ store }) {
     inputRef.current.value = ''
   }
 
-  const onToggleTask = ({ target: { dataset } }) => {
-    store.dispatch({ type: 'TOGGLE_TODO', id: dataset.id })
-  }
+  const onToggle = (id) => store.dispatch({ type: 'TOGGLE_TODO', id })
 
   useEffect(() => {
     const { todos, visibilityFilter } = store.getState()
@@ -65,27 +64,8 @@ export default function TodoApp({ store }) {
               Add ToDo
             </button>
           </div>
-          <hr className="my-5" />
-          {tasks.length === 0 ? (
-            <p> no tasks for you...</p>
-          ) : (
-            <ol className="list-unstyled">
-              {tasks.map((todo) => (
-                <li
-                  style={{
-                    textDecoration: todo.completed ? 'line-through' : 'none',
-                    cursor: 'pointer'
-                  }}
-                  onClick={onToggleTask}
-                  data-id={todo.id}
-                  key={todo.id}
-                >
-                  {todo.text}
-                </li>
-              ))}
-            </ol>
-          )}
           <VisibilityFilter store={store} />
+          <TodoListView todoList={tasks} onToggle={onToggle} />
         </div>
       </div>
     </div>
