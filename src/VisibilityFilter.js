@@ -1,5 +1,5 @@
 export default function VisibilityFilter({ store }) {
-  const onChange = ({ target: { dataset } }) => {
+  const onFilterChange = ({ target: { dataset } }) => {
     store.dispatch({
       type: 'SET_VISIBILITY_FILTER',
       filter: dataset.filter
@@ -15,7 +15,7 @@ export default function VisibilityFilter({ store }) {
           name="btnradio"
           id="btnradio1"
           autoComplete="off"
-          onChange={onChange}
+          onChange={onFilterChange}
           data-filter="SHOW_ALL"
           defaultChecked
         />
@@ -28,7 +28,7 @@ export default function VisibilityFilter({ store }) {
           name="btnradio"
           id="btnradio2"
           autoComplete="off"
-          onChange={onChange}
+          onChange={onFilterChange}
           data-filter="SHOW_ACTIVE"
         />
         <label className="btn btn-outline-secondary" htmlFor="btnradio2">
@@ -41,7 +41,7 @@ export default function VisibilityFilter({ store }) {
           name="btnradio"
           id="btnradio3"
           autoComplete="off"
-          onChange={onChange}
+          onChange={onFilterChange}
           data-filter="SHOW_COMPLETED"
         />
         <label className="btn btn-outline-secondary" htmlFor="btnradio3">
